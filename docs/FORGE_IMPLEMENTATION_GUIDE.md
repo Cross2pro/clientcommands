@@ -692,11 +692,11 @@ jar {
 
 | Minecraft Version | Forge Version | Status | Notes |
 |-------------------|---------------|--------|-------|
-| 1.20.1 | 47.x | ✓ Supported | Primary target |
-| 1.19.4 | 45.x | ✓ Supported | Minor API differences |
-| 1.19.2 | 43.x | ✓ Supported | Older event system |
-| 1.18.2 | 40.x | ⚠ Partial | Client commands limited |
-| 1.16.5 | 36.x | ✗ Not supported | Significant API changes |
+| 1.20.1 | 47.1.0+ | ✓ Supported | Primary target, requires RegisterClientCommandsEvent |
+| 1.19.4 | 45.0.0-45.2.0 | ✓ Supported | Minor API differences in event system |
+| 1.19.2 | 43.0.0-43.3.5 | ✓ Supported | Older event system, may need workarounds |
+| 1.18.2 | 40.1.0+ | ⚠ Partial | Client commands require Forge 40.1.0+, limited support |
+| 1.16.5 | 36.x | ✗ Not supported | Significant API changes, extensive refactoring needed |
 
 ## Migration Checklist
 

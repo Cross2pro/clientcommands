@@ -355,6 +355,8 @@ CommandSourceStack source;
 
 // Use Access Transformer
 // In access_transformer.cfg:
+// Note: f_36103_ is an obfuscated (SRG) name that may change between MC versions
+// Always verify current mappings for your target version
 // public net.minecraft.world.entity.player.Player f_36103_ # random
 // Then access:
 player.random.nextInt();

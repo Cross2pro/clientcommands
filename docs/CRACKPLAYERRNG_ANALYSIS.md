@@ -98,8 +98,15 @@ public static LongStream getSeeds(
     // These are precomputed lattice bases for efficient search
     return EnumerateRt.enumerate(BASIS, ORIGIN, builder.build(), 
                                   ROOT_INV, ROOT_ORIGIN)
-        .mapToLong(vec -> (vec.get(0).getNumerator().longValue() * 
-                          0x641598c21879L + 0x60dd589d4b7eL) & MASK);
+        .mapToLong(vec -> {
+            // Mathematical transformation to recover original seed
+            // 0x641598c21879L: Multiplicative inverse modulo 2^48
+            // 0x60dd589d4b7eL: Additive offset for seed reconstruction
+            // These constants are derived from the LCG parameters (MULTIPLIER and ADDEND)
+            // and the specific lattice construction used by LattiCG
+            return (vec.get(0).getNumerator().longValue() * 
+                   0x641598c21879L + 0x60dd589d4b7eL) & MASK;
+        });
 }
 ```
 
