@@ -1,0 +1,20 @@
+RNGCommands - Forge Port
+
+This mod is a port of the RNG-related features from ClientCommands
+by Earthcomputer (https://github.com/Earthcomputer/clientcommands).
+
+Original work Copyright (c) 2021 Earthcomputer, licensed under the
+GNU Lesser General Public License v3.0 (LGPL-3.0).
+
+This port retains only RNG-related functionality:
+- /ccrackrng (seed cracking)
+- /cenchant (enchantment manipulation)
+- /cfish (fishing manipulation)
+- /cchorus (chorus fruit teleport manipulation)
+- /cpredictbrushables (suspicious block loot prediction)
+- Player RNG state tracking and related RNG event handlers
+
+Non-RNG features from the original (waypoints, c2c, config GUI, etc.)
+have been excluded from this port.
+
+See LICENSE for the full license text.

@@ -1,0 +1,130 @@
+// Simplified build.gradle without ForgeGradle (offline build)
+// Uses pre-remapped Minecraft client and manual dependencies
+
+plugins {
+    id 'java'
+}
+
+apply plugin: 'maven-publish'
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println "Java: ${System.getProperty 'java.version'}"
+
+repositories {
+    maven { url = uri("file:///home/hatch/workspace/local-repo") }
+}
+
+dependencies {
+    // Pre-remapped Minecraft client (Mojang/official names)
+    compileOnly files('libs/mc/client-official.jar', 'libs/mc/server-official.jar')
+    // Forge universal (Forge classes)
+    compileOnly 'net.minecraftforge:forge:1.20.1-47.4.23:universal'
+    // Forge eventbus (@SubscribeEvent)
+    compileOnly('net.minecraftforge:eventbus:6.2.33') { transitive = false }
+    // Forge javafmllanguage (@Mod annotation)
+    compileOnly('net.minecraftforge:javafmllanguage:1.20.1-47.4.23') { transitive = false }
+    // Forge fmlloader (FMLPaths)
+    compileOnly('net.minecraftforge:fmlloader:1.20.1-47.4.23') { transitive = false }
+    // Mixin
+    compileOnly 'org.spongepowered:mixin:0.8.5'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5'
+    // Gson, Guava and ASM needed by Mixin annotation processor
+    annotationProcessor 'com.google.code.gson:gson:2.10.1'
+    annotationProcessor 'com.google.guava:guava:31.1-jre'
+    annotationProcessor 'org.ow2.asm:asm:9.9.1'
+    annotationProcessor 'org.ow2.asm:asm-tree:9.9.1'
+    annotationProcessor 'org.ow2.asm:asm-commons:9.9.1'
+    // Brigadier (command library)
+    compileOnly 'com.mojang:brigadier:1.1.8'
+    compileOnly 'com.google.guava:guava:31.1-jre'
+    // DataFixerUpper (Either for ItemParser) - no transitive deps needed
+    compileOnly('com.mojang:datafixerupper:6.0.8') { transitive = false }
+    // Commons Lang3 (Pair for FishingCracker)
+    compileOnly 'org.apache.commons:commons-lang3:3.12.0'
+    // JetBrains Annotations (@Nullable)
+    compileOnly 'org.jetbrains:annotations:24.0.1'
+    // Mojang logging + slf4j (use 1.7.30 which has valid POM)
+    compileOnly 'com.mojang:logging:1.1.1'
+    compileOnly 'org.slf4j:slf4j-api:1.7.30'
+    // Gson
+    compileOnly 'com.google.code.gson:gson:2.10.1'
+    // Authlib (GameProfile for mixin)
+    compileOnly 'com.mojang:authlib:4.0.43'
+    compileOnly 'org.joml:joml:1.10.5'
+    compileOnly 'it.unimi.dsi:fastutil:8.5.9'
+    // SeedFinding - use JAR directly to avoid transitive deps (compileOnly for compilation, shaded into final JAR)
+    compileOnly files('/home/hatch/workspace/local-repo/com/seedfinding/mc_feature/1.171.7/mc_feature-1.171.7.jar')
+    // SeedFinding transitive deps
+    compileOnly files('/home/hatch/workspace/local-repo/com/seedfinding/mc_core/1.192.1/mc_core-1.192.1.jar')
+    compileOnly files('/home/hatch/workspace/local-repo/com/seedfinding/mc_biome/1.171.1/mc_biome-1.171.1.jar')
+    compileOnly files('/home/hatch/workspace/local-repo/com/seedfinding/mc_math/1.171.0/mc_math-1.171.0.jar')
+    compileOnly files('/home/hatch/workspace/local-repo/com/seedfinding/mc_seed/1.171.1/mc_seed-1.171.1.jar')
+    compileOnly files('/home/hatch/workspace/local-repo/com/seedfinding/mc_noise/1.171.1/mc_noise-1.171.1.jar')
+}
+
+// Mixin refmap configuration - disabled for diagnostic build
+// The Mixin annotation processor requires a proper ForgeGradle environment
+// with obfuscation data. Since Forge 1.20.1 uses Mojang names at runtime
+// (official mappings), and our mixins already use Mojang names, no refmap
+// is needed. The refmap reference has been removed from mixins.json.
+def mixinConfig = 'mixins.rngcommands.json'
+
+tasks.withType(JavaCompile).configureEach {
+    // Disable Mixin annotation processor for diagnostic build
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-proc:none']
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'MixinConfigs'            : mixinConfig,
+        ])
+    }
+    // Shade SeedFinding (all required JARs)
+    from {
+        zipTree('/home/hatch/workspace/local-repo/com/seedfinding/mc_feature/1.171.7/mc_feature-1.171.7.jar')
+        zipTree('/home/hatch/workspace/local-repo/com/seedfinding/mc_core/1.192.1/mc_core-1.192.1.jar')
+        zipTree('/home/hatch/workspace/local-repo/com/seedfinding/mc_biome/1.171.1/mc_biome-1.171.1.jar')
+        zipTree('/home/hatch/workspace/local-repo/com/seedfinding/mc_math/1.171.0/mc_math-1.171.0.jar')
+        zipTree('/home/hatch/workspace/local-repo/com/seedfinding/mc_seed/1.171.1/mc_seed-1.171.1.jar')
+        zipTree('/home/hatch/workspace/local-repo/com/seedfinding/mc_noise/1.171.1/mc_noise-1.171.1.jar')
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version: forge_version, forge_version_range: forge_version_range,
+            loader_version_range: loader_version_range,
+            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors: mod_authors, mod_description: mod_description,
+    ]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifact jar
+        }
+    }
+}

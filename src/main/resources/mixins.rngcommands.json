@@ -1,0 +1,38 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.earthcomputer.clientcommands.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "CheckedRandomAccessor",
+    "InGameHudAccessor",
+    "MixinAnvilContainer",
+    "MixinAxeHoeAndShovelItem",
+    "MixinBowAndTridentItem",
+    "MixinClientPlayNetworkHandler",
+    "MixinClientPlayerEntity",
+    "MixinClientPlayerInteractionManager",
+    "MixinCloseHandledScreenPacket",
+    "MixinCreeperMooshroomSheepAndSnowGolemEntity",
+    "MixinCrossbowItem",
+    "MixinDamageEnchantment",
+    "MixinEnchantingScreen",
+    "MixinEntity",
+    "MixinFishingBobberEntity",
+    "MixinFishingRodItem",
+    "MixinFlintAndSteelItem",
+    "MixinItemEntity",
+    "MixinItemStack",
+    "MixinLivingEntity",
+    "MixinMinecraftClient",
+    "MixinMiningToolItem",
+    "MixinOnAStickItem",
+    "MixinPlayerEntity",
+    "MixinPlayerInventory",
+    "MixinPumpkinBlock",
+    "MixinShearsItem"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

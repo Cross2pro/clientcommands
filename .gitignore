@@ -1,0 +1,21 @@
+# Gradle
+.gradle/
+build/
+
+# Minecraft / Forge
+libs/mc/*.jar
+libs/mc/*_mappings.txt
+run/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
