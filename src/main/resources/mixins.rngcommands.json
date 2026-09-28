@@ -25,7 +25,6 @@
     "MixinItemEntity",
     "MixinItemStack",
     "MixinLivingEntity",
-    "MixinMinecraftClient",
     "MixinMiningToolItem",
     "MixinOnAStickItem",
     "MixinPlayerEntity",

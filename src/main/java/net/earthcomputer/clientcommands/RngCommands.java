@@ -6,8 +6,11 @@ import net.earthcomputer.clientcommands.command.ChorusCommand;
 import net.earthcomputer.clientcommands.command.CrackRNGCommand;
 import net.earthcomputer.clientcommands.command.FishCommand;
 import net.earthcomputer.clientcommands.command.PredictBrushablesCommand;
+import net.earthcomputer.clientcommands.features.PlayerRandCracker;
 import net.earthcomputer.clientcommands.render.RenderQueue;
 import net.earthcomputer.clientcommands.task.TaskManager;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -46,8 +49,17 @@ public class RngCommands {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             TaskManager.tick();
+            RenderQueue.tick();
+            // Track level changes (replaces MixinMinecraftClient.setLevel)
+            ClientLevel currentLevel = Minecraft.getInstance().level;
+            if (currentLevel != lastLevel) {
+                lastLevel = currentLevel;
+                PlayerRandCracker.onRecreatePlayer();
+            }
         }
     }
+
+    private ClientLevel lastLevel = null;
 
     @SubscribeEvent
     public void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
