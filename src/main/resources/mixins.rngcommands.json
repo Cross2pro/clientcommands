@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "net.earthcomputer.clientcommands.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "mixins.rngcommands.refmap.json",
   "mixins": [
     "CheckedRandomAccessor",
     "InGameHudAccessor",
