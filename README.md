@@ -38,3 +38,7 @@ export JAVA_HOME=<你的JDK17路径>
 ## 许可证
 
 LGPL-3.0-only，见 [LICENSE](LICENSE)。
+
+## 项目文档
+
+目标、范围、任务清单、测试方法与已知风险见 [docs/GOALS_AND_TASKS.md](docs/GOALS_AND_TASKS.md)。
